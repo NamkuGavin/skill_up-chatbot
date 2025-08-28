@@ -1,108 +1,252 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import ChatMessage from "@/app/widgets/chat_message";
-import ChatInput from "@/app/widgets/chat_input";
-import { ChatMessage as ChatMessageType } from "@/types/chat";
+import React, { useState, useRef, useEffect } from 'react';
+import Head from 'next/head';
+import { 
+  PlusIcon, 
+  MagnifyingGlassIcon, 
+  SparklesIcon,
+  MicrophoneIcon,
+  PaperAirplaneIcon,
+  PhotoIcon,
+  ChatBubbleLeftRightIcon,
+  EllipsisHorizontalIcon,
+  AcademicCapIcon,
+  DocumentTextIcon,
+  ChartBarIcon
+} from '@heroicons/react/24/outline';
 
-export default function ChatViews() {
-  const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  category: string;
+  color: string;
+}
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, category }) => (
+  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+    
+    {/* Bagian icon + category di tengah */}
+    <div className="flex flex-col items-center text-center mb-3">
+      {icon}
+      <h3 className="text-lg font-semibold text-gray-900 mt-2">{category}</h3>
+    </div>
+
+    {/* Deskripsi tetap rata kiri */}
+    <p className="text-gray-600 text-sm leading-relaxed">{title}</p>
+    <p className="text-gray-500 text-xs mt-1">{description}</p>
+  </div>
+);
+
+
+// 🔹 Rotating Text
+const RotatingText: React.FC = () => {
+  const messages = [
+    "Level up your career potential",
+    "Keep growing your skills",
+    "Discover more career opportunities"
+  ];
+
+  const [text, setText] = useState("");
+  const [index, setIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    const current = messages[index % messages.length];
+    let speed = isDeleting ? 50 : 100;
 
-  const handleSendMessage = async (content: string) => {
-    // Add user message
-    const userMessage: ChatMessageType = {
-      id: Date.now().toString(),
-      role: "user",
-      content,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
-
-    try {
-      // Prepare chat history for API
-      const chatHistory = messages.map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      }));
-
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: content,
-          chatHistory,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const assistantMessage: ChatMessageType = {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content: data.message,
-          timestamp: new Date(),
-        };
-
-        setMessages((prev) => [...prev, assistantMessage]);
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        setText(current.substring(0, text.length + 1));
+        if (text === current) {
+          setTimeout(() => setIsDeleting(true), 1500);
+        }
       } else {
-        throw new Error(data.error || "Failed to get response");
+        setText(current.substring(0, text.length - 1));
+        if (text === "") {
+          setIsDeleting(false);
+          setIndex((prev) => prev + 1);
+        }
       }
-    } catch (error) {
-      console.error("Error sending message:", error);
+    }, speed);
 
-      const errorMessage: ChatMessageType = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "Maaf, terjadi kesalahan. Silakan coba lagi.",
-        timestamp: new Date(),
-      };
+    return () => clearTimeout(timeout);
+  }, [text, isDeleting, index, messages]);
 
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
+  return (
+    <div className="flex items-center justify-center space-x-2 text-sm text-gray-500 mb-6 h-6">
+      <SparklesIcon className="w-4 h-4" />
+      <span>{text}</span>
+      <span className="animate-pulse">|</span>
+    </div>
+  );
+};
+
+const Dashboard: React.FC = () => {
+  const [inputValue, setInputValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      textarea.style.height = "auto";
+      const lineHeight = 24;
+      const maxHeight = lineHeight * 10;
+      textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + "px";
+      textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+    }
+  }, [inputValue]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
+  const handleSend = () => {
+    if (inputValue.trim()) {
+      console.log('Sending message:', inputValue);
+      setInputValue('');
+    }
+  };
+
+  const features = [
+    {
+      icon: (
+        <div className="w-12 h-12 border border-gray-500 rounded-xl flex items-center justify-center mb-4">
+          <AcademicCapIcon className="w-6 h-6 text-orange-500" />
+        </div>
+      ),
+      title: "Discover in-demand skills for your target industry and get personalized learning paths",
+      category: "First Steps",
+      description: ""
+    },
+    {
+      icon: (
+        <div className="w-12 h-12 border border-gray-500 rounded-xl flex items-center justify-center mb-4">
+          <DocumentTextIcon className="w-6 h-6 text-blue-600" />
+        </div>
+      ),
+      title: "Get expert tips for creating compelling CVs and cover letters that stand out",
+      category: "Career Boost",
+      description: ""
+    },
+    {
+      icon: (
+        <div className="w-12 h-12 border border-gray-500 rounded-xl flex items-center justify-center mb-4">
+          <ChartBarIcon className="w-6 h-6 text-green-600" />
+        </div>
+      ),
+      title: "Explore career opportunities and industry insights to advance your professional growth",
+      category: "Growth",
+      description: ""
+    }
+  ];
+
+  const actionButtons = [
+    { icon: <SparklesIcon className="w-5 h-5" />, label: "Career Insights" },
+    { icon: <PhotoIcon className="w-5 h-5" />, label: "Build Resume" },
+    { icon: <MagnifyingGlassIcon className="w-5 h-5" />, label: "Job Search" },
+    { icon: <ChatBubbleLeftRightIcon className="w-5 h-5" />, label: "Interview Preparation" },
+    { icon: <EllipsisHorizontalIcon className="w-5 h-5" />, label: "More Tools" }
+  ];
+
   return (
-    <div className="flex flex-col h-screen max-w-6xl mx-auto bg-white shadow-lg">
-      {/* Header */}
-      <div className="bg-blue-600 text-white p-4">
-        <h1 className="text-xl font-semibold">Skill Up Chatbot</h1>
-        <p className="text-sm opacity-90">Powered by Gemini AI</p>
-      </div>
+    <>
+      <Head>
+        <title>Daily Nixtio - AI Assistant</title>
+        <meta name="description" content="AI Assistant Dashboard" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {messages.length === 0 ? (
-          <div className="text-center text-gray-500 mt-8">
-            <p>👋 Halo! Saya adalah Skill Up Chatbot.</p>
-            <p>Ada yang bisa saya bantu?</p>
+      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-50 to-indigo-100 p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-12">
+          <div className="flex items-center space-x-2">
+            <SparklesIcon className="w-5 h-5 text-blue-600" />
+            <span className="text-sm font-medium text-gray-600">Powered by Gemini</span>
           </div>
-        ) : (
-          messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          <h1 className="text-lg font-semibold text-gray-900">SKILL-UP</h1>
+        </div>
 
-      {/* Input */}
-      <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-    </div>
+        <div className="max-w-4xl mx-auto">
+          {/* Welcome Section */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-2">
+              Hi User, Ready to<br />
+              Level Up Your Career?
+            </h2>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {features.map((feature, index) => (
+              <FeatureCard key={index} {...feature} />
+            ))}
+          </div>
+
+          {/* Bottom Section */}
+          <div className="text-center mb-8">
+            {/* 🔹 Rotating Text */}
+            <RotatingText />
+
+            {/* Input Area */}
+            <div className="bg-white rounded-2xl p-4 shadow-sm mb-6">
+              <textarea
+                ref={textareaRef}
+                placeholder='Example: "Explain quantum computing in simple terms"'
+                className="w-full text-gray-600 placeholder-gray-400 bg-transparent outline-none resize-none h-12"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex space-x-2">
+                  <button className="p-2 text-gray-400 hover:text-gray-600">
+                    <PlusIcon className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button className="p-2 text-gray-400 hover:text-gray-600">
+                    <MicrophoneIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleSend}
+                    className="p-2 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
+                  >
+                    <PaperAirplaneIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center flex-wrap gap-3">
+              {actionButtons.map((button, index) => (
+                <button
+                  key={index}
+                  className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity flex items-center space-x-2"
+                >
+                  {button.icon}
+                  <span>{button.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-center space-x-2 text-xs text-gray-400 mt-8">
+              <SparklesIcon className="w-4 h-4" />
+              <span>Powered by Gemini v2.5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
-}
+};
+
+export default Dashboard;
