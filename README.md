@@ -54,19 +54,19 @@ Selain itu, project ini juga jadi sarana latihan membangun aplikasi fullstack mo
 
 ---
 
-git clone https://github.com/NamkuGavin/skill_up-chatbot.git
+git clone https://github.com/NamkuGavin/skill_up-chatbot.git\n
 cd your-repo
 
 ### Step 2. Install Dependencies
 
 ---
 
-npm install
-npm install @heroicons/react@2.1.3
-npm install ai @ai-sdk/react @ai-sdk/google
-npm install react-markdown remark-gfm
-npx shadcn@latest add
-npm install @google/generative-ai
+- npm install
+- npm install @heroicons/react@2.1.3
+- npm install ai @ai-sdk/react @ai-sdk/google
+- npm install react-markdown remark-gfm
+- npx shadcn@latest add
+- npm install @google/generative-ai
 
 ### Setup Environment Variables
 
