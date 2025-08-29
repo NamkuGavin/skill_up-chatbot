@@ -12,7 +12,7 @@ Selain itu, project ini juga jadi sarana latihan membangun aplikasi fullstack mo
 
 | Name                               | Role               |
 | ---------------------------------- | ------------------ |
-| [Muhammad Gavin Arasyi]            | Project Manager    |
+| [Muhammad Gavin Arasyi]            | Frontend Developer |
 | [Muhammad Fadhillah Arasyi]        | Frontend Developer |
 | [Muhammad Raihan ]                 | Frontend Developer |
 | [Muhammad Ilham Fazari Winatapura] | Frontend Developer |
