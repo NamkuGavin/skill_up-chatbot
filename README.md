@@ -54,8 +54,8 @@ Selain itu, project ini juga jadi sarana latihan membangun aplikasi fullstack mo
 
 ---
 
-git clone https://github.com/NamkuGavin/skill_up-chatbot.git\n
-cd your-repo
+1. git clone https://github.com/NamkuGavin/skill_up-chatbot.git
+2. cd your-repo
 
 ### Step 2. Install Dependencies
 
