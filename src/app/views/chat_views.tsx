@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import Head from 'next/head';
-import { 
-  PlusIcon, 
-  MagnifyingGlassIcon, 
+import React, { useState, useRef, useEffect } from "react";
+import Head from "next/head";
+import {
+  PlusIcon,
+  MagnifyingGlassIcon,
   SparklesIcon,
   MicrophoneIcon,
   PaperAirplaneIcon,
@@ -13,9 +13,9 @@ import {
   EllipsisHorizontalIcon,
   AcademicCapIcon,
   DocumentTextIcon,
-  ChartBarIcon
-} from '@heroicons/react/24/outline';
-import ReactMarkdown from 'react-markdown';
+  ChartBarIcon,
+} from "@heroicons/react/24/outline";
+import ReactMarkdown from "react-markdown";
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -25,9 +25,13 @@ interface FeatureCardProps {
   color: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, category }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({
+  icon,
+  title,
+  description,
+  category,
+}) => (
   <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-    
     {/* Bagian icon + category di tengah */}
     <div className="flex flex-col items-center text-center mb-3">
       {icon}
@@ -40,13 +44,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, cat
   </div>
 );
 
-
 // 🔹 Rotating Text
 const RotatingText: React.FC = () => {
   const messages = [
     "Level up your career potential",
     "Keep growing your skills",
-    "Discover more career opportunities"
+    "Discover more career opportunities",
   ];
 
   const [text, setText] = useState("");
@@ -85,8 +88,10 @@ const RotatingText: React.FC = () => {
 };
 
 const Dashboard: React.FC = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [messages, setMessages] = useState<
+    { role: "user" | "bot"; text: string }[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -98,12 +103,13 @@ const Dashboard: React.FC = () => {
       const lineHeight = 24;
       const maxHeight = lineHeight * 10;
       textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + "px";
-      textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+      textarea.style.overflowY =
+        textarea.scrollHeight > maxHeight ? "auto" : "hidden";
     }
   }, [inputValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -112,16 +118,16 @@ const Dashboard: React.FC = () => {
   const callGeminiAPI = async (message: string) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
       const data = await res.json();
-      
-      return data.message || 'No response';
+
+      return data.message || "No response";
     } catch (err) {
-      return 'Error contacting Gemini API';
+      return "Error contacting Gemini API";
     } finally {
       setLoading(false);
     }
@@ -130,10 +136,10 @@ const Dashboard: React.FC = () => {
   const handleSend = async () => {
     if (inputValue.trim()) {
       const userMessage = inputValue.trim();
-      setMessages((prev) => [...prev, { role: 'user', text: userMessage }]);
-      setInputValue('');
+      setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
+      setInputValue("");
       const botReply = await callGeminiAPI(userMessage);
-      setMessages((prev) => [...prev, { role: 'bot', text: botReply }]);
+      setMessages((prev) => [...prev, { role: "bot", text: botReply }]);
     }
   };
 
@@ -144,9 +150,10 @@ const Dashboard: React.FC = () => {
           <AcademicCapIcon className="w-6 h-6 text-orange-500" />
         </div>
       ),
-      title: "Discover in-demand skills for your target industry and get personalized learning paths",
+      title:
+        "Discover in-demand skills for your target industry and get personalized learning paths",
       category: "First Steps",
-      description: ""
+      description: "",
     },
     {
       icon: (
@@ -154,9 +161,10 @@ const Dashboard: React.FC = () => {
           <DocumentTextIcon className="w-6 h-6 text-blue-600" />
         </div>
       ),
-      title: "Get expert tips for creating compelling CVs and cover letters that stand out",
+      title:
+        "Get expert tips for creating compelling CVs and cover letters that stand out",
       category: "Career Boost",
-      description: ""
+      description: "",
     },
     {
       icon: (
@@ -164,18 +172,25 @@ const Dashboard: React.FC = () => {
           <ChartBarIcon className="w-6 h-6 text-green-600" />
         </div>
       ),
-      title: "Explore career opportunities and industry insights to advance your professional growth",
+      title:
+        "Explore career opportunities and industry insights to advance your professional growth",
       category: "Growth",
-      description: ""
-    }
+      description: "",
+    },
   ];
 
   const actionButtons = [
     { icon: <SparklesIcon className="w-5 h-5" />, label: "Career Insights" },
     { icon: <PhotoIcon className="w-5 h-5" />, label: "Build Resume" },
     { icon: <MagnifyingGlassIcon className="w-5 h-5" />, label: "Job Search" },
-    { icon: <ChatBubbleLeftRightIcon className="w-5 h-5" />, label: "Interview Preparation" },
-    { icon: <EllipsisHorizontalIcon className="w-5 h-5" />, label: "More Tools" }
+    {
+      icon: <ChatBubbleLeftRightIcon className="w-5 h-5" />,
+      label: "Interview Preparation",
+    },
+    {
+      icon: <EllipsisHorizontalIcon className="w-5 h-5" />,
+      label: "More Tools",
+    },
   ];
 
   return (
@@ -191,7 +206,9 @@ const Dashboard: React.FC = () => {
         <div className="flex justify-between items-center mb-12">
           <div className="flex items-center space-x-2">
             <SparklesIcon className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-medium text-gray-600">Powered by Gemini</span>
+            <span className="text-sm font-medium text-gray-600">
+              Powered by Gemini
+            </span>
           </div>
           <h1 className="text-lg font-semibold text-gray-900">SKILL-UP</h1>
         </div>
@@ -200,17 +217,20 @@ const Dashboard: React.FC = () => {
           {/* Welcome Section */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-2">
-              Hi User, Ready to<br />
+              Hi User, Ready to
+              <br />
               Level Up Your Career?
             </h2>
           </div>
 
           {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {features.map((feature, index) => (
-              <FeatureCard color={''} key={index} {...feature} />
-            ))}
-          </div>
+          {messages.length === 0 && (
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              {features.map((feature, index) => (
+                <FeatureCard color={""} key={index} {...feature} />
+              ))}
+            </div>
+          )}
 
           {/* Bottom Section */}
           <div className="text-center mb-8">
@@ -222,16 +242,18 @@ const Dashboard: React.FC = () => {
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`my-2 flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`my-2 flex ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
                   <div
                     className={`px-4 py-2 rounded-2xl max-w-xl my-2 ${
-                      msg.role === 'user'
-                        ? 'bg-blue-600 text-white text-left'
-                        : 'bg-gray-200 text-gray-800 text-left'
+                      msg.role === "user"
+                        ? "bg-blue-600 text-white text-left"
+                        : "bg-gray-200 text-gray-800 text-left"
                     }`}
                   >
-                    {msg.role === 'bot' ? (
+                    {msg.role === "bot" ? (
                       <ReactMarkdown>{msg.text}</ReactMarkdown>
                     ) : (
                       msg.text
