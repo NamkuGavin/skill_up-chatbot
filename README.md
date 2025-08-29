@@ -54,7 +54,7 @@ Selain itu, project ini juga jadi sarana latihan membangun aplikasi fullstack mo
 
 ---
 
-git clone https://github.com/your-github-username/your-repo.git
+git clone https://github.com/NamkuGavin/skill_up-chatbot
 cd your-repo
 
 ### Step 2. Install Dependencies
@@ -62,12 +62,17 @@ cd your-repo
 ---
 
 npm install
+npm install @heroicons/react@2.1.3
+npm install ai @ai-sdk/react @ai-sdk/google
+npm install react-markdown remark-gfm
+npx shadcn@latest add
+npm install @google/generative-ai
 
 ### Setup Environment Variables
 
 ---
 
-VITE_GEMINI_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_api_key_here
 
 ### Run Development Server
 
