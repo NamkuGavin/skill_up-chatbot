@@ -21,10 +21,10 @@ Selain itu, project ini juga jadi sarana latihan membangun aplikasi fullstack mo
 
 ## 🚀 Features
 
-- 🔐 **Authentication**: Login/Logout user (opsional dengan NextAuth atau Firebase).
-- 🤖 **AI Chatbot (Gemini)**: Pengguna bisa bertanya dan mendapatkan jawaban real-time dari Google Gemini API.
-- 💾 **Chat History**: Simpan riwayat percakapan agar bisa dilanjutkan.
-- 🖼 **File Upload**: Pengguna dapat upload gambar/file untuk dianalisis AI.
+- Menjawab pertanyaan tentang skill untuk industri tertentu
+- Memberikan tips membuat CV
+- Memberikan informasi tentang industry kerja
+- Review CV (Ngasi skor 1-10 dan bentuk persentase) seberapa mungkin cv yang dipakai bakalan tembus administrative dari job yang diincer
 - 🎯 **Smart Prompt Examples**: Menampilkan 3 contoh kartu pertanyaan awal (hilang otomatis setelah user mengirim pesan).
 - 📊 **Responsive UI**: Tampilan menggunakan TailwindCSS + Radix UI dengan dark/light mode.
 
