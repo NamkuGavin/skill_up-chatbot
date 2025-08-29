@@ -15,6 +15,7 @@ import {
   DocumentTextIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline';
+import ReactMarkdown from 'react-markdown';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -85,6 +86,8 @@ const RotatingText: React.FC = () => {
 
 const Dashboard: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([]);
+  const [loading, setLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -106,10 +109,31 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleSend = () => {
+  const callGeminiAPI = async (message: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      const data = await res.json();
+      
+      return data.message || 'No response';
+    } catch (err) {
+      return 'Error contacting Gemini API';
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSend = async () => {
     if (inputValue.trim()) {
-      console.log('Sending message:', inputValue);
+      const userMessage = inputValue.trim();
+      setMessages((prev) => [...prev, { role: 'user', text: userMessage }]);
       setInputValue('');
+      const botReply = await callGeminiAPI(userMessage);
+      setMessages((prev) => [...prev, { role: 'bot', text: botReply }]);
     }
   };
 
@@ -193,7 +217,38 @@ const Dashboard: React.FC = () => {
             {/* 🔹 Rotating Text */}
             <RotatingText />
 
-            {/* Input Area */}
+            {/* Chat Messages (pindahkan ke atas input area) */}
+            <div className="mb-6">
+              {messages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`my-2 flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`px-4 py-2 rounded-2xl max-w-xs ${
+                      msg.role === 'user'
+                        ? 'bg-blue-600 text-white text-left'
+                        : 'bg-gray-200 text-gray-800 text-left'
+                    }`}
+                  >
+                    {msg.role === 'bot' ? (
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    ) : (
+                      msg.text
+                    )}
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="px-4 py-2 rounded-2xl bg-gray-200 text-gray-500 animate-pulse max-w-xs">
+                    Gemini is typing...
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input Area (pindahkan ke bawah chat messages) */}
             <div className="bg-white rounded-2xl p-4 shadow-sm mb-6">
               <textarea
                 ref={textareaRef}
